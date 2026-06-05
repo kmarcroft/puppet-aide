@@ -14,14 +14,7 @@ describe 'aide' do
       it { is_expected.to contain_class('aide::firstrun').that_requires('Package[aide]') }
 
       context 'with rules declared via Hiera' do
-        let(:hiera_data) do
-          {
-            'aide::rule' => {
-              'MYRULE' => { 'rules' => ['p', 'i', 'n'] },
-              'PERMS'  => { 'rules' => ['p', 'u', 'g'], 'order' => '04' },
-            },
-          }
-        end
+        let(:hiera_config) { File.expand_path('spec/fixtures/hiera/hiera.yaml') }
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_aide__rule('MYRULE').with_rules(['p', 'i', 'n']) }
@@ -29,15 +22,7 @@ describe 'aide' do
       end
 
       context 'with watches declared via Hiera' do
-        let(:hiera_data) do
-          {
-            'aide::watch' => {
-              '/etc'     => { 'rules' => ['NORMAL'] },
-              '/var/log' => { 'rules' => ['LOG'], 'type' => 'regular' },
-              '/tmp'     => { 'type' => 'exclude' },
-            },
-          }
-        end
+        let(:hiera_config) { File.expand_path('spec/fixtures/hiera/hiera.yaml') }
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_aide__watch('/etc').with_rules(['NORMAL']) }
